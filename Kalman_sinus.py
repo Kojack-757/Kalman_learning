@@ -7,12 +7,12 @@ plt.close('all')
 
 
 #--- Signaux théorique ---##
-dt = 1e-6      # time step
-T  = 20e-3       # total time
+dt = 1e-3     # time step
+T  = 1       # total time
 N  = int(T/dt) # number of data
 
 A = 1
-f = 440
+f = 10
 w = 2*np.pi*f
 t = np.arange(0, T, dt) # time array
 
@@ -68,18 +68,17 @@ Q = np.array([Var_Acc])                 # Covariance de "processus" ici l'accél
 R = np.array([Var_vit])                 # Covariance de la mesure ici l'accélération
 H = np.array([0, 1])
 
-X_init = [0, 0]
-P_init = [1e0, 1e0]
+X_init = np.array([[0],[0]])
+P_init = np.array([[1e0,0],[0, 1e0]])
 
-X,P = kp.CalculKalman(F=F,X_init=X_init,P_init=P_init,B=B,Q=Q,R=R,H=H,u=A_mes,y=V_mes,dt=dt)
+X,P = kp.CalculKalman(F=F,X_init=X_init,P_init=P_init,B=B,Q=Q,R=R,H=H,u=A_mes,z=V_mes,dt=dt)
 
-print(f"X:\n{X}\n")
-
-print(f"P:\n{P}\n")
-
+X_plot = X.T[0][:]
+print(X_plot)
 fig,axs = plt.subplots(nrows=3,ncols=1)
 
 axs[0].plot(t, X_th, label='Théorie', color='red')
+axs[0].plot(t, X_plot, label='filter', color='green')
 axs[0].set_title('position')
 axs[0].set_xlabel('Temps')
 axs[0].legend()
