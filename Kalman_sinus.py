@@ -73,18 +73,25 @@ P_init = np.array([[1e0,0],[0, 1e0]])
 
 X,P = kp.CalculKalman(F=F,X_init=X_init,P_init=P_init,B=B,Q=Q,R=R,H=H,u=A_mes,z=V_mes,dt=dt)
 
-X_plot = X.T[0][:]
-print(X_plot)
+X_filt = [state[0, 0] for state in X]
+X_filt = np.array(X_filt)
+print(X_filt)
+
+V_filt = [state[1, 0] for state in X]
+V_filt = np.array(V_filt)
+print(V_filt)
+
 fig,axs = plt.subplots(nrows=3,ncols=1)
 
 axs[0].plot(t, X_th, label='Théorie', color='red')
-axs[0].plot(t, X_plot, label='filter', color='green')
+axs[0].plot(t, X_filt[:-1], label='filtré', color='green')
 axs[0].set_title('position')
 axs[0].set_xlabel('Temps')
 axs[0].legend()
 
 axs[1].plot(t_vit, V_mes, label='Mesure', color='blue')
 axs[1].plot(t, V_th, label='Théorie', color='red')
+axs[1].plot(t, V_filt[:-1], label='filtré', color='green')
 axs[1].set_title('Vitesse')
 axs[1].set_xlabel('Temps')
 axs[1].legend()

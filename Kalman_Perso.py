@@ -32,7 +32,10 @@ def CalculKalman(F,X_init, P_init, B, Q, R,H, u,z,dt):
         print(f"Covar Innvation: \n{S}\n")
 
 
-        K_gain = (P_pred @ H.T) / S   # ATTENTION FAIRE np.linalg.inv(S) quand on sera en Matricielle
+        K_gain = (P_pred @ H.T) / S  # ATTENTION FAIRE np.linalg.inv(S) quand on sera en Matricielle
+        print(f"K_gain pas T = {K_gain}\n")
+        K_gain = np.atleast_2d(K_gain).T
+
         K.append(K_gain)
 
         print("Mise à jours gain Kalman:")
@@ -41,8 +44,11 @@ def CalculKalman(F,X_init, P_init, B, Q, R,H, u,z,dt):
         print("Mesure:")
         print(f"z[i]: \n{z[i]}\n")
 
+        print("Observations:")
+        print(f"H: \n{H}\n")
+
         X_update = X_pred + K_gain * y #ATTENTION NE MARCHERA PLUS EN MATRICIELLE
-        P_update = (np.eye(2) - K_gain @ H) @ P_pred
+        P_update = (np.eye(2) - H @ K_gain ) @ P_pred
 
         print("Mise à jour X et P")
         print(f"X_update: \n{X_update}")
@@ -51,4 +57,4 @@ def CalculKalman(F,X_init, P_init, B, Q, R,H, u,z,dt):
         X.append(X_update)
         P.append(P_update)
 
-    return np.array([X]), P
+    return X, P
